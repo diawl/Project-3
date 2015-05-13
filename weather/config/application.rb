@@ -1,5 +1,5 @@
 require File.expand_path('../boot', __FILE__)
-
+# In the rare event that your application needs to run some code before Rails itself is loaded, put them here
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
