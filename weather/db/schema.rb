@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150513053826) do
+ActiveRecord::Schema.define(version: 20150514042209) do
+
+  create_table "conditions", force: :cascade do |t|
+    t.integer  "measurement_id"
+    t.text     "icon"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "conditions", ["measurement_id"], name: "index_conditions_on_measurement_id"
 
   create_table "crono_jobs", force: :cascade do |t|
     t.string   "job_id",            null: false
@@ -23,4 +32,79 @@ ActiveRecord::Schema.define(version: 20150513053826) do
   end
 
   add_index "crono_jobs", ["job_id"], name: "index_crono_jobs_on_job_id", unique: true
+
+  create_table "locations", force: :cascade do |t|
+    t.integer  "postcode_id"
+    t.text     "loc_id"
+    t.float    "lat"
+    t.float    "long"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "locations", ["postcode_id"], name: "index_locations_on_postcode_id"
+
+  create_table "measurements", force: :cascade do |t|
+    t.integer  "wdate_id"
+    t.time     "timestamp"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "measurements", ["wdate_id"], name: "index_measurements_on_wdate_id"
+
+  create_table "postcodes", force: :cascade do |t|
+    t.integer  "postcode"
+    t.float    "lat"
+    t.float    "lon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "rainfalls", force: :cascade do |t|
+    t.integer  "measurement_id"
+    t.float    "precip"
+    t.float    "probability"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "rainfalls", ["measurement_id"], name: "index_rainfalls_on_measurement_id"
+
+  create_table "temperatures", force: :cascade do |t|
+    t.integer  "measurement_id"
+    t.float    "temp"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "temperatures", ["measurement_id"], name: "index_temperatures_on_measurement_id"
+
+  create_table "wdates", force: :cascade do |t|
+    t.integer  "location_id"
+    t.date     "date"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "wdates", ["location_id"], name: "index_wdates_on_location_id"
+
+  create_table "wind_directions", force: :cascade do |t|
+    t.integer  "measurement_id"
+    t.integer  "bearing"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "wind_directions", ["measurement_id"], name: "index_wind_directions_on_measurement_id"
+
+  create_table "wind_speeds", force: :cascade do |t|
+    t.integer  "measurement_id"
+    t.float    "speed"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "wind_speeds", ["measurement_id"], name: "index_wind_speeds_on_measurement_id"
+
 end
