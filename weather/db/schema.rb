@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
     t.integer  "postcode_id"
     t.text     "loc_id"
     t.float    "lat"
-    t.float    "long"
+    t.float    "lon"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end

@@ -11,4 +11,16 @@
 #   end
 # end
 #
-Crono.perform(Retrieval).every 5.seconds
+
+require 'rake'
+
+Weather::Application.load_tasks
+
+# BOM scraping.
+class UpdateDB
+  def perform
+    Rake::Task['weather:scrape_bom'].invoke
+  end
+end
+
+Crono.perform(UpdateDB).every 30.minutes

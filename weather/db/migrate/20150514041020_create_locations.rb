@@ -4,7 +4,7 @@ class CreateLocations < ActiveRecord::Migration
       t.belongs_to :postcode, index: true
       t.text :loc_id
       t.float :lat
-      t.float :long
+      t.float :lon
 
       t.timestamps null: false
     end
