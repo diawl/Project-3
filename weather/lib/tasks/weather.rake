@@ -41,31 +41,44 @@ namespace :weather do
     info_table = load_bom_info_table
     info_table.xpath("./tbody/child::*[child::th/a]").each do |row|
       name = row.xpath("./th/a").text
-      if location = Location.find_by(name: name, active: true)
+      if location = Location.find_by(loc_id: name)
         # Find the information.
+        time_details = row.xpath("./td[contains(@headers, 'obs-datetime')]").text
+        time_details.match(/\d{1,2}\/(\d{2}):(\d{2})([ap]m)/)
+        if $3 == "am" 
+          if $1 == "12"
+            hour = 0
+          else
+            hour = $1.to_i
+          end
+        elsif $3 == "pm"
+          if $1 == "12"
+            hour = 12
+          else
+            hour = $1.to_i + 12
+          end
+        end
+        min = $2.to_i
+        t=Time.now
+        timestamp = Time.new(t.year, t.month, t.day, hour, min, 0)
         temp = row.xpath("./td[contains(@headers, 'obs-temp')]").text.to_f
         rain = row.xpath("./td[contains(@headers, 'obs-rainsince9am')]").text.to_f
         wind_speed = row.xpath("./td[contains(@headers, 'obs-wind-spd-kph')]").text.to_f
         wind_dir_name = row.xpath("./td[contains(@headers, 'obs-wind-dir')]").text
         wind_dir = WIND_DIR_MAPPINGS[wind_dir_name.to_sym]
 
-        # Create a new reading.
-        reading = Reading.new(
-          temperature: temp,
-          rainfall: rain,
-          wind_speed: wind_speed,
-          wind_dir: wind_dir,
-          timestamp: Time.now
-        )
-        measurement = Measurement.new(timestamp: Time.now)
-        measurement.location = location
+        wdate = location.wdates.find_or_initialize_by(date: Date.today.strftime('%d-%m-%Y'))
+        wdate.save if wdate.changed?
+        # Create a new measurement.
+        measurement = Measurement.new(timestamp: Time.now())
+        measurement.wdate = wdate
         temperature = Temperature.new(temp: temp)
         temperature.measurement = measurement
         rainfall = Rainfall.new(precip: rain)
         rainfall.measurement = measurement
-        wind_speed = Wind_speed.new(speed: wind_speed)
+        wind_speed = WindSpeed.new(speed: wind_speed)
         wind_speed.measurement = measurement
-        wind_direction = Wind_direction.new(bearing: wind_dir)
+        wind_direction = WindDirection.new(bearing: wind_dir)
         wind_direction.measurement = measurement
         measurement.save
         temperature.save

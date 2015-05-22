@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
 
   create_table "conditions", force: :cascade do |t|
     t.integer  "measurement_id"
-    t.text     "icon"
+    t.string   "icon"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
 
   create_table "locations", force: :cascade do |t|
     t.integer  "postcode_id"
-    t.text     "loc_id"
+    t.string   "loc_id"
     t.float    "lat"
     t.float    "lon"
     t.datetime "created_at",  null: false
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
   add_index "measurements", ["wdate_id"], name: "index_measurements_on_wdate_id"
 
   create_table "postcodes", force: :cascade do |t|
+    t.string   "name"
     t.integer  "postcode"
     t.float    "lat"
     t.float    "lon"
@@ -82,7 +83,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
 
   create_table "wdates", force: :cascade do |t|
     t.integer  "location_id"
-    t.date     "date"
+    t.string   "date"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
