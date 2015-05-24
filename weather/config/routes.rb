@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+
+  get 'data/index'
+
+  root 'locations#index'
+
+  resources :locations, only: [ :index ] do
+    resources :data, only: [ :index ]
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
