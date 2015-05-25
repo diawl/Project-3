@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :locations, only: [ :index ] do
     resources :data, only: [ :index ]
   end
+
+  get 'weather/prediction/:post_code/:period' => 'prediction#post', post_code: /3[0-9]{3}/, period: /[136][028][0]?/
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

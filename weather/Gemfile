@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 
-
+gem 'coffee-script-source', '1.8.0'
 #
 gem 'crono', '~> 0.8.9'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
