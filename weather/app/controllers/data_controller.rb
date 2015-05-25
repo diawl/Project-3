@@ -1,20 +1,35 @@
 class DataController < ApplicationController
 
 	def show
-
-    	@measurements = Measurement.all
-    	
+    	@measurements = Measurement.all    	
   	end
 
-  	def index
+	def show_by_location_id
 
-	    #@locations = Location.find(params[:postcode_id])
-		
-	    #@wdate = Wdate.find(params[:date])
-	  
-	    #@measurements = @wdate.measurements
+			@location_id = params[:location_id]
 
-	    @locations = Location.all
-	  	@measurements = Measurement.all
-  end
+			@location = Location.find_by(loc_id: @location_id)
+
+			puts @location_id
+			
+			@date = params[:date]
+		  
+	end
+
+	def show_by_postcode_id
+
+		    #@postcode_id = params[:postcode_id]
+
+			#@locations = Location.find_by(postcode_id: @postcode_id)
+
+			@locations = Location.take(10)
+
+			@date = params[:date]
+
+			@postcode = params[:postcode_id]
+			
+			puts @date
+		    
+	end
+ 
 end

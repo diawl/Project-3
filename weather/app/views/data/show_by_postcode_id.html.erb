@@ -1,0 +1,55 @@
+<h1> Weather Measurments for PostCode <%=  @postcode %> </h1>
+
+<p>Measurement Date: <%= @date %> </p>
+
+<table class="table">
+
+<% @locations.each do |location| %>
+<tr>
+    <th>Id</th>
+    <th>Latitute</th>
+    <th>Longitute</th>
+    <th>LastUpdate</th>
+ </tr>
+
+  <tbody>
+      <tr>
+        <td><%= location.loc_id %></td>
+        <td><%= location.lat %></td>
+        <td><%= location.lon %></td>
+        <td><%= location.updated_at %></td>
+     <td> 
+<% if location.wdates.find_by(date: @date).present? %>
+
+ <tr>
+    <th>Time</th>
+    <th>Temperature</th>
+    <th>RainFall</th>
+    <th>WindDirection</th>
+
+    <th>WindSpeed</th>
+  </tr>
+  <% location.wdates.find_by(date: @date).measurements.order(:timestamp).each do |measurement| %>
+    <tbody>
+      <tr>
+        <td><%= measurement.timestamp.localtime %></td>
+        <td><%= measurement.temperature.temp %></td>
+        <td><%= measurement.rainfall.precip.round(2) %></td>
+        <td><%= measurement.wind_direction.bearing %></td>
+        <td><%= measurement.wind_speed.speed %></td>
+      </tr>
+    </tbody>
+  <% end %>
+
+  <% else %>
+   <tr>
+    <th><p>No Measurments taken for this location </p></th>
+    </tr>
+  <% end %>
+   </td> 
+ </tr>
+
+    </tbody>
+
+  <% end %>
+</table>
