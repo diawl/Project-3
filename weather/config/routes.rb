@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   end
 
   get 'weather/prediction/:post_code/:period' => 'prediction#post', post_code: /3[0-9]{3}/, period: /[136][028][0]?/
+  get 'weather/prediction/:lat/:lon/:period' => 'prediction#location', lat: /-?\d+\.\d+/, lon:/-?\d+\.\d+/, period: /[136][028][0]?/
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
