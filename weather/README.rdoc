@@ -1,3 +1,8 @@
-use rake weather:update_locations for updating locations
-
+follow the following steps:
+# get locations for all BOM stations
+rake weather:update_locations
+# initialize victoria postcode
+rake weather:init_postcode
+# get postcode information for all victoria stations of BOM from googlemap
+rake weather:reverse_geocoding
 use rake weather:scrape_bom for updating measurements for all locations

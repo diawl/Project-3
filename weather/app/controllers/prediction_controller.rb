@@ -8,5 +8,6 @@ class PredictionController < ApplicationController
 		@period = params[:period]
 		@lat = params[:lat]
 		@lon = params[:lon]
+		@location = Location.find_by(lat: @lat, lon: @lon)
 	end
 end

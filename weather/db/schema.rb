@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 20150514042209) do
     t.string   "loc_id"
     t.float    "lat"
     t.float    "lon"
+    t.boolean  "active"
+    t.string   "loc_type"
+    t.string   "state"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end

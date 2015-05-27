@@ -1,2 +1,1 @@
-<h2><%= "#{@lat},#{@lon}" %></h2>
-<h2><%= @period %></h2>
+<%= @location ? "#{@location.loc_id}:#{@location.lat},#{@location.lon}" : "no valid measurements for this lat&lon" %>
