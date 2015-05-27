@@ -1,8 +1,7 @@
 class LocationController < ApplicationController
-  def index
-    @locations = Location.all
-  end
-  def show
-    @locations = Location.all
-  end
+	def index
+	end
+	def locations
+		@locations = Location.where(active: true)
+	end
 end

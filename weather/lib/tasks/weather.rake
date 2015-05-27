@@ -138,18 +138,16 @@ namespace :weather do
         lat = loc.lat
         lon = loc.lon
         url = "#{GOOGLE_BASE_URL}#{lat},#{lon}&key=#{GOOGLE_API_KEY}"
-        Thread.new{
-          results = JSON.parse(open(url).read)['results'][0]['address_components']
-          results.each do |comp| 
-            if comp['types']==["postal_code"]
-              postcode = comp['long_name']
-              post = Postcode.find_or_initialize_by(postcode: postcode)
-              loc.postcode = post
-              loc.save
-              post.save if post.changed?
-            end
+        results = JSON.parse(open(url).read)['results'][0]['address_components']
+        results.each do |comp| 
+          if comp['types']==["postal_code"]
+            postcode = comp['long_name']
+            post = Postcode.find_or_initialize_by(postcode: postcode)
+            loc.postcode = post
+            loc.save
+            post.save if post.changed?
           end
-        }.run
+        end
       end
     end
   end

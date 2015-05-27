@@ -1,0 +1,24 @@
+<table>
+	<thead>
+		<tr>
+			<th>Seq</th>
+			<th>Name</th>
+			<th>Latitude</th>
+			<th>Longitude</th>
+			<th>State</th>	
+			<th>Postcode</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @locations.order(:state, :lat, :lon).each_with_index do |location,index| %>
+		<tr>
+			<td><%= index + 1 %></td>
+			<td><%= link_to "#{location.loc_id}", controller: "data", action: "show_by_location_id", location_id: location.loc_id %></td>
+			<td><%= location.lat %></td>
+			<td><%= location.lon %></td>
+			<td><%= location.state %></td>
+			<td><%= location.postcode ? location.postcode.postcode : nil %></td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
