@@ -54,9 +54,9 @@ namespace :weather do
       info_table['node'].xpath("./tbody/tr/th/a").each do |location_node|
         # Find the location's information
         location_doc = Nokogiri.HTML(open("#{BOM_BASE_URL}#{location_node.attr :href}"))
+        name = location_node.text.gsub(/\s+/,"")
         station_details = location_doc.css(".stationdetails").first.text
         station_details.match(/Lat:\s*(-?\d+\.\d+)\s+Lon:\s*(-?\d+\.\d+)/)
-        name = location_node.text
         state = info_table['state']
         lat = $1.to_f
         lon = $2.to_f
@@ -77,7 +77,7 @@ namespace :weather do
     index = load_bom_index
     index.each do |info_table|
       info_table.xpath("./tbody/child::*[child::th/a]").each do |row|
-        name = row.xpath("./th/a").text
+        name = row.xpath("./th/a").text.gsub(/\s+/,"")
         location = Location.find_or_initialize_by(loc_id: name, loc_type: "station")
         # Find the information.
         time_details = row.xpath("./td[contains(@headers, 'obs-datetime')]").text
@@ -132,7 +132,7 @@ namespace :weather do
   end
 
   task :reverse_geocoding => :environment do
-    locations = Location.where("loc_type = 'station' and state = 'vic'")
+    locations = Location.where(loc_type: "station", state: "vic")
     locations.each do |loc|
       if loc.postcode == nil
         lat = loc.lat
@@ -156,7 +156,7 @@ namespace :weather do
     filename = './lib/assets/vic_post.csv'
     input = CSV.read(filename)
     array = []
-    input.each{|line| array << {"postcode"=>line[0],"loc_id"=>line[1],"lat"=>line[2],"lon"=>line[3]} }
+    input.each{|line| array << {"postcode"=>line[0],"loc_id"=>line[1].gsub(/\s+/,""),"lat"=>line[2],"lon"=>line[3]} }
     array.each do |line|
       post = Postcode.find_or_initialize_by(postcode: line['postcode'].to_i)
       location = post.locations.find_or_initialize_by(loc_id: line['loc_id'], loc_type: "region", state: "vic")

@@ -57,10 +57,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
   add_index "measurements", ["wdate_id"], name: "index_measurements_on_wdate_id"
 
   create_table "postcodes", force: :cascade do |t|
-    t.string   "name"
     t.integer  "postcode"
-    t.float    "lat"
-    t.float    "lon"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,4 +1,4 @@
-<h1> Weather Measurments for PostCode <%=  @postcode %> </h1>
+<h1> Weather Measurments for PostCode: <%=  @postcode.postcode %> </h1>
 
 <p>Measurement Date: <%= @date %> </p>
 
@@ -6,7 +6,7 @@
 
 <% @locations.each do |location| %>
 <tr>
-    <th>Id</th>
+    <th>Loc id</th>
     <th>Latitute</th>
     <th>Longitute</th>
     <th>LastUpdate</th>
@@ -43,7 +43,7 @@
 
   <% else %>
    <tr>
-    <th><p>No Measurments taken for this location </p></th>
+    <td>No Measurments taken for this location </td>
     </tr>
   <% end %>
    </td> 

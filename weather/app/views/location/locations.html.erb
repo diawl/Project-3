@@ -11,13 +11,14 @@
 	</thead>
 	<tbody>
 		<% @locations.order(:state, :lat, :lon).each_with_index do |location,index| %>
+		<% location.postcode ? status = true : status = false %>
 		<tr>
 			<td><%= index + 1 %></td>
-			<td><%= link_to "#{location.loc_id}", controller: "data", action: "show_by_location_id", location_id: location.loc_id %></td>
+			<td><%= link_to "#{location.loc_id}", controller: "data", action: "location", location_id: location.loc_id, date: Date.today.strftime('%d-%m-%Y') %></td>
 			<td><%= location.lat %></td>
 			<td><%= location.lon %></td>
 			<td><%= location.state %></td>
-			<td><%= location.postcode ? location.postcode.postcode : nil %></td>
+			<td><%= link_to_if(status, location.postcode ? "#{location.postcode.postcode}" : "nil", {controller: "data", action: "postcode", post_code: location.postcode ? location.postcode.postcode : 0, date: Date.today.strftime('%d-%m-%Y')}) %></td>
 		</tr>
 		<% end %>
 	</tbody>
