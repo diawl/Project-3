@@ -76,7 +76,7 @@ namespace :weather do
   task :scrape_bom => :environment do
     index = load_bom_index
     index.each do |info_table|
-      info_table.xpath("./tbody/child::*[child::th/a]").each do |row|
+      info_table['node'].xpath("./tbody/child::*[child::th/a]").each do |row|
         name = row.xpath("./th/a").text.gsub(/\s+/,"")
         location = Location.find_or_initialize_by(loc_id: name, loc_type: "station")
         # Find the information.
@@ -97,7 +97,7 @@ namespace :weather do
         end
         min = $2.to_i
         t=Time.now
-        timestamp = Time.new(t.year, t.month, t.day, hour, min, 0)
+        timestamp = Time.new(t.year, t.month, t.day, hour, min, 0, "+10:00")
         temp = row.xpath("./td[contains(@headers, 'obs-temp')]").text.to_f
         rain = row.xpath("./td[contains(@headers, 'obs-rainsince9am')]").text.to_f
         wind_speed = row.xpath("./td[contains(@headers, 'obs-wind-spd-kph')]").text.to_f

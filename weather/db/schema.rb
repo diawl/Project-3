@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20150514042209) do
 
   create_table "measurements", force: :cascade do |t|
     t.integer  "wdate_id"
-    t.time     "timestamp"
+    t.datetime "timestamp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
