@@ -1,5 +1,6 @@
 class Location < ActiveRecord::Base
 	has_many :wdates
+	has_many :measurements, through: :wdates
 	belongs_to :postcode
 
 	def lat_lon
