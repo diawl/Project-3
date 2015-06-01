@@ -14,7 +14,7 @@
  *= require_self
  */
 
-table.gridtable {
+table.table {
     font-family: verdana,arial,sans-serif;
     font-size:11px;
     color:#333333;
@@ -23,14 +23,14 @@ table.gridtable {
     border-collapse: collapse;
     width: 100%;
 }
-table.gridtable th {
+table.table th {
     border-width: 1px;
     padding: 8px;
     border-style: solid;
     border-color: #666666;
     background-color: #dedede;
 }
-table.gridtable td {
+table.table td {
     border-width: 1px;
     padding: 8px;
     border-style: solid;

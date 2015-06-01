@@ -1,55 +1,57 @@
-<h1> Weather Measurments for PostCode: <%=  @postcode.postcode %> </h1>
+<h1> Weather Measurements for PostCode: <%=  @postcode.postcode %> </h1>
 
 <p>Measurement Date: <%= @date %> </p>
 
 <table class="table">
+<% if not @locations.nil? %>
 
-<% @locations.each do |location| %>
-<tr>
-    <th>Loc id</th>
-    <th>Latitute</th>
-    <th>Longitute</th>
-    <th>LastUpdate</th>
- </tr>
+    <% @locations.each do |location| %>
+    <tr>
+        <th>Loc id</th>
+        <th>Latitute</th>
+        <th>Longitute</th>
+        <th>LastUpdate</th>
+     </tr>
 
-  <tbody>
-      <tr>
-        <td><%= location.loc_id %></td>
-        <td><%= location.lat %></td>
-        <td><%= location.lon %></td>
-        <td><%= location.updated_at %></td>
-     <td> 
-<% if location.wdates.find_by(date: @date).present? %>
+      <tbody>
+          <tr>
+            <td><%= location.loc_id %></td>
+            <td><%= location.lat %></td>
+            <td><%= location.lon %></td>
+            <td><%= location.updated_at %></td>
+         <td>
+        <% if location.wdates.find_by(date: @date).present? %>
+         <tr>
+            <th>Time</th>
+            <th>Temperature</th>
+            <th>RainFall</th>
+            <th>WindDirection</th>
+            <th>WindSpeed</th>
+          </tr>
+          <% location.wdates.find_by(date: @date).measurements.order(:timestamp).each do |measurement| %>
+            <tbody>
+              <tr>
+                <td><%= measurement.timestamp.localtime %></td>
+                <td><%= measurement.temperature.temp %></td>
+                <td><%= measurement.rainfall.precip.round(2) %></td>
+                <td><%= measurement.wind_direction.bearing %></td>
+                <td><%= measurement.wind_speed.speed %></td>
+              </tr>
+            </tbody>
+          <% end %>
 
- <tr>
-    <th>Time</th>
-    <th>Temperature</th>
-    <th>RainFall</th>
-    <th>WindDirection</th>
-
-    <th>WindSpeed</th>
-  </tr>
-  <% location.wdates.find_by(date: @date).measurements.order(:timestamp).each do |measurement| %>
-    <tbody>
-      <tr>
-        <td><%= measurement.timestamp.localtime %></td>
-        <td><%= measurement.temperature.temp %></td>
-        <td><%= measurement.rainfall.precip.round(2) %></td>
-        <td><%= measurement.wind_direction.bearing %></td>
-        <td><%= measurement.wind_speed.speed %></td>
-      </tr>
-    </tbody>
-  <% end %>
-
-  <% else %>
-   <tr>
-    <td>No Measurments taken for this location </td>
+     <% else %>
+         <tr>
+             <td>No Measurments taken for this location </td>
+         </tr>
+     <% end %>
+      <% end %>
+<% else%>
+    <tr>
+    <td>
+    no information available
+    </td>
     </tr>
-  <% end %>
-   </td> 
- </tr>
+<% end %>
 
-    </tbody>
-
-  <% end %>
 </table>
