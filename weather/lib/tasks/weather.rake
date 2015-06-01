@@ -76,11 +76,12 @@ namespace :weather do
   task :scrape_bom => :environment do
     index = load_bom_index
     index.each do |info_table|
+      tid = info_table['node'].attr :id
       info_table['node'].xpath("./tbody/child::*[child::th/a]").each do |row|
         name = row.xpath("./th/a").text.gsub(/\s+/,"")
         location = Location.find_or_initialize_by(loc_id: name, loc_type: "station")
         # Find the information.
-        time_details = row.xpath("./td[contains(@headers, 'obs-datetime')]").text
+        time_details = row.xpath("./td[contains(@headers, '#{tid}-datetime')]").text
         time_details.match(/\d{1,2}\/(\d{2}):(\d{2})([ap]m)/)
         if $3 == "am" 
           if $1 == "12"
@@ -98,10 +99,10 @@ namespace :weather do
         min = $2.to_i
         t=Time.now
         timestamp = Time.new(t.year, t.month, t.day, hour, min, 0, "+10:00")
-        temp = row.xpath("./td[contains(@headers, 'obs-temp')]").text.to_f
-        rain = row.xpath("./td[contains(@headers, 'obs-rainsince9am')]").text.to_f
-        wind_speed = row.xpath("./td[contains(@headers, 'obs-wind-spd-kph')]").text.to_f
-        wind_dir_name = row.xpath("./td[contains(@headers, 'obs-wind-dir')]").text
+        temp = row.xpath("./td[contains(@headers, '#{tid}-temp')]").text.to_f
+        rain = row.xpath("./td[contains(@headers, '#{tid}-rainsince9am')]").text.to_f
+        wind_speed = row.xpath("./td[contains(@headers, '#{tid}-wind-spd-kph')]").text.to_f
+        wind_dir_name = row.xpath("./td[contains(@headers, '#{tid}-wind-dir')]").text
         wind_dir = WIND_DIR_MAPPINGS[wind_dir_name.to_sym]
 
         wdate = location.wdates.find_or_initialize_by(date: Date.today.strftime('%d-%m-%Y'))

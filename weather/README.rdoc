@@ -5,4 +5,7 @@ rake weather:update_locations
 rake weather:init_postcode
 # get postcode information for all victoria stations of BOM from googlemap
 rake weather:reverse_geocoding
-use rake weather:scrape_bom for updating measurements for all locations
+# get measurements from bom, only use this for testing
+rake weather:scrape_bom
+# run scheduled task to scrape data from bom
+bundle exec crono -e development
