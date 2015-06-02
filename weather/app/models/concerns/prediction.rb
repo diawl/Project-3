@@ -15,7 +15,7 @@ class Prediction
 	def getSamples(location, period)
 		samples=[]
 		if Location.measurements.count >= 100
-			return Location.measurements.order(timestamp: :desc)take(100)
+			return Location.measurements.order(timestamp: :desc).take(100)
 		else
 			return Location.measurements.order(timestamp: :desc)
 		end
@@ -45,6 +45,6 @@ class Prediction
 
 	def getRegression(samples)
 		r = Regression.new(samples)
-		return .getRegression
+		return r
 	end
 end

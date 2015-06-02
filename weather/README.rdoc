@@ -1,8 +1,28 @@
-follow the following steps:
+# follow the following steps:
+	bundle install
+	rake db:drop
+	rake db:migrate
 # get locations for all BOM stations
-rake weather:update_locations
+	rake weather:update_locations
+
 # initialize victoria postcode
-rake weather:init_postcode
+	rake weather:init_postcode
+
 # get postcode information for all victoria stations of BOM from googlemap
-rake weather:reverse_geocoding
-use rake weather:scrape_bom for updating measurements for all locations
+	rake weather:reverse_geocoding
+
+# get all stations' history data from bom, it might need more than 20 mins
+	rake weather:get_history
+
+# run the scheduled tasks
+	bundle exec crono -e development
+
+# start server
+	rails s
+
+# visit webpage
+	http://localhost:3000
+
+# or use APIs, remember add .json if you want a json response, for example
+	http://localhost:3000/weather/locations
+	http://localhost:3000/weather/locations.json

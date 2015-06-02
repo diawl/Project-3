@@ -1,7 +1,5 @@
 class LocationController < ApplicationController
 	require 'json'
-	def index
-	end
 	def locations
 		@locations = Location.where(active: true)
 		respond_to do |format|
