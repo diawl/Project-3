@@ -1,2 +1,30 @@
-<h2><%= @post_code %></h2>
-<h2><%= @period %></h2>
+<h1> Weather Predictions for PostCode: <%=  @post_code %> </h1>
+
+<p>Prediction Period: <%= @period %> </p>
+
+<% if not @temp.nil? %>
+<p>Location: <%= @temp[:location_id] %> </p>
+
+  <% @temp[:predictions].each do |key, value| %>
+    <p>Prediction: <%= key %> </p>
+    <table class="table">
+      <tr>
+        <th>Time</th>
+        <th>Rain value</th>
+        <th>Rain Probability</th>
+        <th>Temp value</th>
+        <th>Temp Probability</th>
+      </tr>
+      <tbody>
+      <tr>
+        <td><%= value[:time] %></td>
+        <td><%= value[:rain][:value] %></td>
+        <td><%= value[:rain][:probability] %></td>
+        <td><%= value[:temp][:value] %></td>
+        <td><%= value[:temp][:probability] %></td>
+      </tr>
+    </table>
+    <% end %>
+<% else %>
+<h3>No Information available </h3>
+<% end %>

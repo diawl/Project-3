@@ -19,31 +19,9 @@ class DataController < ApplicationController
 		@date = params[:date]
 		@postcode = Postcode.find_by(postcode: params[:post_code].to_i)
 		@locations = @postcode.locations.where(active: true)
-		puts '///////////////'
-		# puts @postcode.locations.where(active: true).wdates.to_json
-		# puts @locations.to_json
-		# puts @postcode.locations.first.wdates.first.measurements.to_json
-		puts @locations.first.wdates.first.measurements.to_json
-		# @wdate = Wdate.where(location_id: @locations.id, date: @date)
-		# @wdate = Wdate.find(location_id: @locations, date: @date)
-		# @measurements = Measurement.where(wdate_id: @wdate)
-		# puts '//------measurements'
-		# puts @wdates.to_json
-		# puts @measurements.temperatures.to_json
-
-		# @locations.each do |obj|
-		# 	if @object.wdates.measurements.nil?
-		# 		date: date1,
-		# 				locations: obj.map { |o| LocationPresenter.new(o)}
-		# 	else
-    #
-		# 	end
-		# end
-
 		respond_to do |format|
 			format.html
 			format.json { render json: JSON.pretty_generate(LocationsMeasurements.new(@locations).as_json(@date)) }
-			# format.json { render json: @locations.where(active: true).first.wdates.to_json }
 		end
 	end
 
