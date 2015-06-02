@@ -1,1 +1,1 @@
-<%= @location ? "#{@location.loc_id}:#{@location.lat},#{@location.lon}" : "no valid measurements for this lat&lon" %>
+<%= @location.getPrediction(@preiod) %>

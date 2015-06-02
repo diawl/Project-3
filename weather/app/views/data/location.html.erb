@@ -25,7 +25,7 @@
     <th>WindDirection</th>
     <th>WindSpeed</th>
   </tr>
-  <% @location.wdates.find_by(date: @date).measurements.order(:timestamp).each do |measurement| %>
+  <% @location.wdates.find_by(date: @date).measurements.order(timestamp: :desc).each do |measurement| %>
     <tbody>
       <tr>
         <td><%= measurement.timestamp.localtime %></td>

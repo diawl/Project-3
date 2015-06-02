@@ -88,9 +88,6 @@ namespace :weather do
       tid = info_table['node'].attr :id
       info_table['node'].xpath("./tbody/child::*[child::th/a]").each do |row|
         name = row.xpath("./th/a").text.gsub(/\s+/,"")
-        if name == "Canberra"
-          byebug
-        end
         location = Location.find_by(loc_id: name, loc_type: "station")
         if location == nil || tid == nil
           nil
@@ -98,48 +95,53 @@ namespace :weather do
           # Find the information.
           time_details = row.xpath("./td[contains(@headers, '#{tid}-datetime')]").text
           time_details.match(/\d{1,2}\/(\d{2}):(\d{2})([ap]m)/)
-          if $3 == "am" 
-            if $1 == "12"
-              hour = 0
+          begin
+            if $3 == "am" 
+              if $1 == "12"
+                hour = 0
+              else
+                hour = $1.to_i
+              end
+            elsif $3 == "pm"
+              if $1 == "12"
+                hour = 12
+              else
+                hour = $1.to_i + 12
+              end
             else
-              hour = $1.to_i
+              raise
             end
-          elsif $3 == "pm"
-            if $1 == "12"
-              hour = 12
-            else
-              hour = $1.to_i + 12
-            end
+          rescue
+            nil
           else
-            byebug
-          end
-          min = $2.to_i
-          t=Time.now
-          timestamp = Time.new(t.year, t.month, t.day, hour, min, 0, "+10:00")
-          temp = row.xpath("./td[contains(@headers, '#{tid}-temp')]").text.to_f
-          rain = row.xpath("./td[contains(@headers, '#{tid}-rainsince9am')]").text.to_f
-          wind_speed = row.xpath("./td[contains(@headers, '#{tid}-wind-spd-kph')]").text.to_f
-          wind_dir_name = row.xpath("./td[contains(@headers, '#{tid}-wind-dir')]").text
-          wind_dir = WIND_DIR_MAPPINGS[wind_dir_name.to_sym]
+            min = $2.to_i
+            t=Time.now
+            timestamp = Time.new(t.year, t.month, t.day, hour, min, 0, "+10:00")
+            temp = row.xpath("./td[contains(@headers, '#{tid}-temp')]").text.to_f
+            rain = row.xpath("./td[contains(@headers, '#{tid}-rainsince9am')]").text.to_f
+            wind_speed = row.xpath("./td[contains(@headers, '#{tid}-wind-spd-kmh')]").text.to_f
+            wind_dir_name = row.xpath("./td[contains(@headers, '#{tid}-wind-dir')]").text
+            wind_dir = WIND_DIR_MAPPINGS[wind_dir_name.to_sym]
 
-          wdate = location.wdates.find_or_initialize_by(date: Date.today.strftime('%d-%m-%Y'))
-          wdate.save if wdate.changed?
-          # Create a new measurement.
-          measurement = wdate.measurements.find_or_initialize_by(timestamp: timestamp)
-          if measurement.changed?
-            temperature = Temperature.new(temp: temp)
-            temperature.measurement = measurement
-            rainfall = Rainfall.new(precip: rain)
-            rainfall.measurement = measurement
-            wind_speed = WindSpeed.new(speed: wind_speed)
-            wind_speed.measurement = measurement
-            wind_direction = WindDirection.new(bearing: wind_dir)
-            wind_direction.measurement = measurement
-            measurement.save
-            temperature.save
-            rainfall.save
-            wind_speed.save
-            wind_direction.save
+            wdate = location.wdates.find_or_initialize_by(date: Date.today.strftime('%d-%m-%Y'))
+            wdate.save if wdate.changed?
+            # Create a new measurement.
+            measurement = wdate.measurements.find_or_initialize_by(timestamp: timestamp)
+            if measurement.changed?
+              temperature = Temperature.new(temp: temp)
+              temperature.measurement = measurement
+              rainfall = Rainfall.new(precip: rain)
+              rainfall.measurement = measurement
+              wind_speed = WindSpeed.new(speed: wind_speed)
+              wind_speed.measurement = measurement
+              wind_direction = WindDirection.new(bearing: wind_dir)
+              wind_direction.measurement = measurement
+              measurement.save
+              temperature.save
+              rainfall.save
+              wind_speed.save
+              wind_direction.save
+            end
           end
         end
       end
@@ -188,14 +190,84 @@ namespace :weather do
   end
 
   task :get_history => :environment do
-    # # Get the list of locations from BOM.
-    # index = load_bom_index
-    # index.each do |info_table|
-    #   info_table['node'].xpath("./tbody/tr/th/a").each do |location_node|
-    #     # Find the location's information
-    #     location_doc = Nokogiri.HTML(open("#{BOM_BASE_URL}#{location_node.attr :href}"))
-
-    #   end
-    # end
+    # Get the list of locations from BOM.
+    index = load_bom_index
+    index.each do |info_table|
+      info_table['node'].xpath("./tbody/tr/th/a").each do |location_node|
+        # Find the location's information
+        name = location_node.text.gsub(/\s+/,"")
+        location = Location.find_by(loc_id: name)
+        if location == nil
+          nil
+        else
+          history_page = Nokogiri.HTML(open("#{BOM_BASE_URL}#{location_node.attr :href}"))
+          tabs = history_page.css("table")
+          tabs.each_with_index do |table,index|
+            tid = table.attr :id
+            if tid == nil
+              nil
+            else
+            Thread.new{
+              table.xpath("./tbody/tr").each do |row|
+                Thread.new{
+                  time = row.xpath("./td[contains(@headers, '#{tid}-datetime')]").text
+                  if time != ""
+                    time.match(/\d{1,2}\/(\d{2}):(\d{2})([ap]m)/)
+                    begin
+                      if $3 == "am" 
+                        if $1 == "12"
+                          hour = 0
+                        else
+                          hour = $1.to_i
+                        end
+                      elsif $3 == "pm"
+                        if $1 == "12"
+                          hour = 12
+                        else
+                          hour = $1.to_i + 12
+                        end
+                      else
+                        raise
+                      end
+                    rescue
+                      nil
+                    else
+                      min = $2.to_i
+                      d = Date.today - index
+                      timestamp = Time.new(d.year, d.month, d.day, hour, min, 0, "+10:00")
+                      temp = row.xpath("./td[contains(@headers, '#{tid}-temp')]").text.to_f
+                      rain = row.xpath("./td[contains(@headers, '#{tid}-rainsince9am')]").text.to_f
+                      wind_speed = row.xpath("./td[contains(@headers, '#{tid}-wind-spd-kmh')]").text.to_f
+                      wind_dir_name = row.xpath("./td[contains(@headers, '#{tid}-wind-dir')]").text
+                      wind_dir = WIND_DIR_MAPPINGS[wind_dir_name.to_sym]
+                      wdate = location.wdates.find_or_initialize_by(date: d.strftime('%d-%m-%Y'))
+                      wdate.save if wdate.changed?
+                      # Create a new measurement.
+                      measurement = wdate.measurements.find_or_initialize_by(timestamp: timestamp)
+                      if measurement.changed?
+                        temperature = Temperature.new(temp: temp)
+                        temperature.measurement = measurement
+                        rainfall = Rainfall.new(precip: rain)
+                        rainfall.measurement = measurement
+                        wind_speed = WindSpeed.new(speed: wind_speed)
+                        wind_speed.measurement = measurement
+                        wind_direction = WindDirection.new(bearing: wind_dir)
+                        wind_direction.measurement = measurement
+                        measurement.save
+                        temperature.save
+                        rainfall.save
+                        wind_speed.save
+                        wind_direction.save
+                      end
+                    end
+                  end
+                  }.join
+              end
+              }.join
+            end
+          end
+        end
+      end
+    end
   end
 end

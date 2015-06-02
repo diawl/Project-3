@@ -5,5 +5,6 @@ class Temperature < ActiveRecord::Base
 	end
 
 	def celsius
+		return self.temp
 	end
 end

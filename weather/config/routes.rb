@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   get 'weather/locations' => 'location#locations'
   get 'weather/prediction/:post_code/:period' => 'prediction#post', post_code: /3[0-9]{3}/, period: /[136][028][0]?/
   get 'weather/prediction/:lat/:lon/:period' => 'prediction#location', lat: /-?\d+\.\d+/, lon: /-?\d+\.\d+/, period: /[136][028][0]?/
-  get 'weather/data/:location_id/:date' => 'data#location', location_id: /[A-Za-z()]+/, date: /(\d{2})-(\d{2})-(\d{4})/, defaults: {format: :json}
-  get 'weather/data/:post_code/:date' => 'data#postcode', post_code: /3\d{3}/, date: /(\d{2})-(\d{2})-(\d{4})/  , defaults: {format: :json}
+  get 'weather/data/:location_id/:date' => 'data#location', location_id: /[A-Za-z()]+/, date: /(\d{2})-(\d{2})-(\d{4})/, defaults: {format: :html}
+  get 'weather/data/:post_code/:date' => 'data#postcode', post_code: /3\d{3}/, date: /(\d{2})-(\d{2})-(\d{4})/  , defaults: {format: :html}
   get 'data/location' => 'data#location'
   get 'data/postcode' => 'data#postcode'
 
